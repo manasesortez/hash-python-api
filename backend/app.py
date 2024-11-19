@@ -1,9 +1,13 @@
 from flask import Flask, request, jsonify
 import jwt
 import datetime
+from flask_cors import CORS
+
 
 app = Flask(__name__)
 SECRET_KEY = 'secret'
+
+CORS(app)
 
 # Usuarios simulados
 users = {'admin': 'password123'}
@@ -23,18 +27,18 @@ def login():
         )
         return jsonify({'token': token})
     else:
-        return jsonify({'message': 'Credenciales inválidas'}), 401
+        return jsonify({'message': 'Credenciales invalidas'}), 401
 
 @app.route('/validate', methods=['GET'])
 def validate_token():
     token = request.headers.get('Authorization')
     try:
         jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-        return jsonify({'message': 'Token válido'})
+        return jsonify({'message': 'Token valido'})
     except jwt.ExpiredSignatureError:
-        return jsonify({'message': 'Límite de tiempo excedido, token inválido'}), 401
+        return jsonify({'message': 'Limite de tiempo excedido, token invalido'}), 401
     except Exception as e:
-        return jsonify({'message': 'Token inválido'}), 401
+        return jsonify({'message': 'Token invalido'}), 401
 
 if __name__ == '__main__':
     app.run(debug=True)
